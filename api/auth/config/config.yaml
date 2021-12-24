@@ -1,0 +1,18 @@
+RpcServerConf:
+    ListenOn: 12001
+    ServiceAddress: 127.0.0.1
+DataSource:
+  Address: 127.0.0.1
+  Port: 3306
+  User: root
+  Password: wangkai@2020
+  Database: gozero
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: jsonrpcmicro_auth
+Cache:
+  Hosts: 
+  - 127.0.0.1:6379
+
+  
