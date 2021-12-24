@@ -37,7 +37,7 @@ type Cache struct {
 }
 
 func (config Config) Init() Config {
-	content, err := ioutil.ReadFile("./config/config.yaml")
+	content, err := ioutil.ReadFile("./auth/config/config.yaml")
 	if err != nil {
 		log.Fatalf("解析config.yaml读取错误: %v", err)
 	}
