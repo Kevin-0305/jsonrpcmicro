@@ -12,6 +12,6 @@ type AuthUser struct {
 	Username    string    `json:"userName" gorm:"comment:用户登录名"`             // 用户登录名
 	Password    string    `json:"-"  gorm:"comment:用户登录密码"`                  // 用户登录密码
 	NickName    string    `json:"nickName" gorm:"default:系统用户;comment:用户昵称"` // 用户昵称"
-	AuthGroup   AuthGroup `json:"authGroup" gorm:"foreignKey:AuthorityId;references:AuthorityId;comment:用户角色"`
-	AuthorityId string    `json:"authorityId" gorm:"default:888;comment:用户角色ID"` // 用户角色ID
+	AuthGroup   AuthGroup `json:"authGroup" gorm:"foreignKey:AuthGroupId;comment:用户分组"`
+	AuthGroupId uint      `json:"authorityId" gorm:"default:888;comment:用户角色ID"` // 用户角色ID
 }

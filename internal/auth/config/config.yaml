@@ -2,11 +2,11 @@ RpcServerConf:
     ListenOn: 12001
     ServiceAddress: 127.0.0.1
 DataSource:
-  Address: 127.0.0.1
+  Address: 49.235.96.248
   Port: 3306
   User: root
   Password: wangkai@2020
-  Database: gozero
+  Database: rpcmicro
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -14,6 +14,6 @@ Etcd:
 Cache:
   Hosts: 
   - 127.0.0.1:6379
-casbin:
+Casbin:
   ModelPath: ../../resource/rbac_model.conf
   

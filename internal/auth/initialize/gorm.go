@@ -3,6 +3,7 @@ package initialize
 import (
 	"fmt"
 	"jsonrpcmicro/internal/auth/config"
+	"jsonrpcmicro/internal/auth/model"
 	"os"
 
 	"go.uber.org/zap"
@@ -16,6 +17,7 @@ func GormMysql() *gorm.DB {
 		return nil
 	}
 	dsn := m.User + ":" + m.Password + "@tcp(" + m.Address + ":" + m.Port + ")/" + m.Database + "?" + "charset=utf8mb4&parseTime=True&loc=Local"
+	fmt.Println(dsn)
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,   // DSN data source name
 		DefaultStringSize:         191,   // string 类型字段的默认长度
@@ -32,10 +34,14 @@ func GormMysql() *gorm.DB {
 }
 
 func InitMysql(db *gorm.DB) {
-	err := db.AutoMigrate()
+	err := db.AutoMigrate(
+		model.AuthUser{},
+		model.AuthGroup{},
+		model.AuthApi{},
+		model.Authority{},
+	)
 	if err != nil {
 		fmt.Println("register table failed", zap.Any("err", err))
 		os.Exit(0)
 	}
-
 }

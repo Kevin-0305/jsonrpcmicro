@@ -21,7 +21,7 @@ type RpcServerConf struct {
 }
 
 type DataSource struct {
-	Address  string `yaml:"Address`
+	Address  string `yaml:"Address"`
 	Port     string `yaml:"Port"`
 	User     string `yaml:"User"`
 	Password string `yaml:"Password"`
@@ -38,7 +38,7 @@ type Cache struct {
 }
 
 type Casbin struct {
-	ModelPath string `yaml:"modelPath"`
+	ModelPath string `yaml:"ModelPath"`
 }
 
 var Conf Config

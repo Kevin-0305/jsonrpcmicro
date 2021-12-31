@@ -79,6 +79,7 @@
 package main
 
 import (
+	"fmt"
 	"jsonrpcmicro/global"
 	"jsonrpcmicro/internal/auth/config"
 	"jsonrpcmicro/internal/auth/initialize"
@@ -97,8 +98,12 @@ func main() {
 	config.Conf = config.Init()
 	global.DB = initialize.GormMysql()
 
-	if global.DB == nil {
-		initialize.InitMysql()
+	if global.DB != nil {
+		initialize.InitMysql(global.DB)
+	}
+	auth := svc.CheckAuthority()
+	if auth {
+		fmt.Println("True")
 	}
 
 	//jsonrpc 服务注册
