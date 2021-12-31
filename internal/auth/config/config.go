@@ -11,7 +11,8 @@ type Config struct {
 	RpcServerConf RpcServerConf `yaml:"RpcServerConf"`
 	DataSource    DataSource    `yaml:"DataSource"`
 	Etcd          Etcd          `yaml:"Etcd"`
-	Cache         Etcd          `yaml:"Cache"`
+	Cache         Cache         `yaml:"Cache"`
+	Casbin        Casbin        `yaml:"Casbin"`
 }
 
 type RpcServerConf struct {
@@ -36,13 +37,19 @@ type Cache struct {
 	Hosts []string `yaml:"Hosts"`
 }
 
-func (config Config) Init() Config {
+type Casbin struct {
+	ModelPath string `yaml:"modelPath"`
+}
+
+var Conf Config
+
+func Init() (cf Config) {
 	content, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
 		log.Fatalf("解析config.yaml读取错误: %v", err)
 	}
-	if yaml.Unmarshal(content, &config) != nil {
+	if yaml.Unmarshal(content, &cf) != nil {
 		log.Fatalf("解析config.yaml出错: %v", err)
 	}
-	return config
+	return cf
 }

@@ -3,6 +3,8 @@ package initialize
 import (
 	"jsonrpcmicro/api/router"
 
+	"jsonrpcmicro/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +16,7 @@ func Routers() *gin.Engine {
 	//Router.Use(middleware.Cors()) // 如需跨域可以打开
 	// 方便统一添加路由组前缀 多服务器上线使用
 	PublicGroup := Router.Group("")
+	PublicGroup.Use(middleware.JWTAuth())
 	{
 		router.InitAuthRouter(PublicGroup) // 注册基础功能路由 不做鉴权
 	}

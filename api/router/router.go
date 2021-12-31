@@ -7,7 +7,7 @@ import (
 )
 
 func InitAuthRouter(Router *gin.RouterGroup) {
-	ProjectRouter := Router.Group("auth").Use()
+	ProjectRouter := Router.Group("auth")
 	{
 		ProjectRouter.POST("Login", auth.Login) // 新建Project
 	}

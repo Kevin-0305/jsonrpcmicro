@@ -79,7 +79,9 @@
 package main
 
 import (
+	"jsonrpcmicro/global"
 	"jsonrpcmicro/internal/auth/config"
+	"jsonrpcmicro/internal/auth/initialize"
 	"jsonrpcmicro/internal/auth/svc"
 	"jsonrpcmicro/utils"
 	"log"
@@ -91,11 +93,18 @@ import (
 )
 
 func main() {
+
+	config.Conf = config.Init()
+	global.DB = initialize.GormMysql()
+
+	if global.DB == nil {
+		initialize.InitMysql()
+	}
+
 	//jsonrpc 服务注册
 	rpc.Register(new(svc.UserService))
-	config := new(config.Config)
-	conf := config.Init()
-	ListenOn := conf.RpcServerConf.ListenOn
+
+	ListenOn := config.Conf.RpcServerConf.ListenOn
 	sock, err := net.Listen("tcp", ":"+ListenOn)
 	log.Println("listen at :" + ListenOn)
 	if err != nil {
@@ -104,13 +113,13 @@ func main() {
 
 	//etcd 服务注册
 	serviceId := uuid.New().String() // 服务ID
-	service, err := utils.NewService(conf.Etcd.Hosts)
+	service, err := utils.NewService(config.Conf.Etcd.Hosts)
 	if err != nil {
 		log.Fatal("etcd connect error:", err)
 	}
 
 	go func() {
-		err := service.RegService(serviceId, conf.Etcd.Key, conf.RpcServerConf.ServiceAddress+":"+conf.RpcServerConf.ListenOn)
+		err := service.RegService(serviceId, config.Conf.Etcd.Key, config.Conf.RpcServerConf.ServiceAddress+":"+config.Conf.RpcServerConf.ListenOn)
 		if err != nil {
 			log.Fatal("etcd connect error:", err)
 		}

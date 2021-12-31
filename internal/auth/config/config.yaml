@@ -14,5 +14,6 @@ Etcd:
 Cache:
   Hosts: 
   - 127.0.0.1:6379
-
+casbin:
+  ModelPath: ../../resource/rbac_model.conf
   
