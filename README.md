@@ -1,2 +1,2 @@
 # jsonrpcmicro
-this is de,p project for go micro use json rpc 
+this is demo project for go micro use json rpc 
