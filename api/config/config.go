@@ -10,10 +10,8 @@ import (
 type Config struct {
 	RpcServerConf RpcServerConf `yaml:"RpcServerConf"`
 	DataSource    DataSource    `yaml:"DataSource"`
-	Etcd          Etcd          `yaml:"Etcd"`
+	Etcds         []Etcd        `yaml:"Etcds"`
 	Cache         Cache         `yaml:"Cache"`
-	Casbin        Casbin        `yaml:"Casbin"`
-	Log           Log           `yaml:"Log"`
 }
 
 type RpcServerConf struct {
@@ -22,7 +20,7 @@ type RpcServerConf struct {
 }
 
 type DataSource struct {
-	Address  string `yaml:"Address"`
+	Address  string `yaml:"Address`
 	Port     string `yaml:"Port"`
 	User     string `yaml:"User"`
 	Password string `yaml:"Password"`
@@ -30,6 +28,7 @@ type DataSource struct {
 }
 
 type Etcd struct {
+	Name  string   `yaml:"Name"`
 	Hosts []string `yaml:"Hosts"`
 	Key   string   `yaml:"Key"`
 }
@@ -38,24 +37,25 @@ type Cache struct {
 	Hosts []string `yaml:"Hosts"`
 }
 
-type Casbin struct {
-	ModelPath string `yaml:"ModelPath"`
+func (config *Config) FindEtcdSvc(name string) (etcd Etcd) {
+	etcds := config.Etcds
+	for _, v := range etcds {
+		if v.Name == name {
+			etcd = v
+			return
+		}
+	}
+	return
 }
 
-type Log struct {
-	Hosts []string `yaml:"Hosts"`
-	Key   string   `yaml:"Key"`
-}
-
-var Conf Config
-
-func Init() (cf Config) {
+func Init() *Config {
+	var config *Config
 	content, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
 		log.Fatalf("解析config.yaml读取错误: %v", err)
 	}
-	if yaml.Unmarshal(content, &cf) != nil {
+	if yaml.Unmarshal(content, &config) != nil {
 		log.Fatalf("解析config.yaml出错: %v", err)
 	}
-	return cf
+	return config
 }

@@ -7,10 +7,12 @@ DataSource:
   User: root
   Password: wangkai@2020
   Database: rpcmicro
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: jsonrpcmicro_auth
+Etcds:
+  -
+    Name: Auth
+    Hosts: 
+    - 127.0.0.1:2379
+    Key: jsonrpcmicro_auth
 Cache:
   Hosts: 
   - 127.0.0.1:6379

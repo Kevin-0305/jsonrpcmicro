@@ -5,7 +5,6 @@ import (
 	"jsonrpcmicro/global"
 	"jsonrpcmicro/internal/auth/config"
 	"jsonrpcmicro/internal/auth/model"
-	"jsonrpcmicro/internal/auth/request"
 	"strings"
 
 	"github.com/casbin/casbin/v2"
@@ -20,7 +19,7 @@ import (
 //@param: authorityId string, casbinInfos []request.CasbinInfo
 //@return: error
 
-func UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
+func UpdateCasbin(authorityId string, casbinInfos []model.CasbinInfo) error {
 	ClearCasbin(0, authorityId)
 	rules := [][]string{}
 	for _, v := range casbinInfos {
@@ -60,11 +59,11 @@ func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod
 //@param: authorityId string
 //@return: pathMaps []request.CasbinInfo
 
-func GetPolicyPathByAuthorityId(authorityId string) (pathMaps []request.CasbinInfo) {
+func GetPolicyPathByAuthorityId(authorityId string) (pathMaps []model.CasbinInfo) {
 	e := Casbin()
 	list := e.GetFilteredPolicy(0, authorityId)
 	for _, v := range list {
-		pathMaps = append(pathMaps, request.CasbinInfo{
+		pathMaps = append(pathMaps, model.CasbinInfo{
 			Path:   v[1],
 			Method: v[2],
 		})

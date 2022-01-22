@@ -1,18 +1,33 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
 	"jsonrpcmicro/api/response"
-	"jsonrpcmicro/internal/auth/svc"
+	"jsonrpcmicro/global"
+	"jsonrpcmicro/internal/auth/model"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var args svc.LoginRequest
-		_ = c.ShouldBindJSON(&args)
-		if args.Account != "Admin" {
+		//parseDuration, _ := time.ParseDuration("24h")
+		sessionID := c.Request.Header.Get("sessionID")
+		userJson, err := global.REDIS.Get(sessionID).Result()
+		if err != nil {
+			response.FailWithDetailed(gin.H{"reload": true}, "未登录或者登录已超时,请重新登录", c)
+			c.Abort()
+			return
+		}
+		var session model.Session
+		err = json.Unmarshal([]byte(userJson), &session)
+		if err != nil {
+			log.Println("session 获取错误", err.Error())
+		}
+		opinion := AuthorityOpinion(c.Request.URL.Path, c.Request.Method, session.Authoritys)
+		if !opinion {
 			response.FailWithDetailed(gin.H{"reload": true}, "权限不足", c)
 			c.Abort()
 			return
@@ -20,6 +35,15 @@ func JWTAuth() gin.HandlerFunc {
 		c.Next()
 		fmt.Println("鉴权生效")
 	}
+}
+
+func AuthorityOpinion(path string, method string, authoritys []model.CasbinInfo) bool {
+	for _, v := range authoritys {
+		if v.Path == path && v.Method == method {
+			return true
+		}
+	}
+	return false
 }
 
 // func JWTAuth() gin.HandlerFunc {
@@ -131,21 +155,21 @@ func JWTAuth() gin.HandlerFunc {
 
 // }
 
-// 更新token
-//func (j *JWT) RefreshToken(tokenString string) (string, error) {
-//	jwt.TimeFunc = func() time.Time {
-//		return time.Unix(0, 0)
-//	}
-//	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-//		return j.SigningKey, nil
-//	})
-//	if err != nil {
-//		return "", err
-//	}
-//	if claims, ok := token.Claims.(*request.CustomClaims); ok && token.Valid {
-//		jwt.TimeFunc = time.Now
-//		claims.StandardClaims.ExpiresAt = time.Now().Unix() + 60*60*24*7
-//		return j.CreateToken(*claims)
-//	}
-//	return "", TokenInvalid
-//}
+// //更新token
+// func (j *JWT) RefreshToken(tokenString string) (string, error) {
+// 	jwt.TimeFunc = func() time.Time {
+// 		return time.Unix(0, 0)
+// 	}
+// 	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+// 		return j.SigningKey, nil
+// 	})
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	if claims, ok := token.Claims.(*request.CustomClaims); ok && token.Valid {
+// 		jwt.TimeFunc = time.Now
+// 		claims.StandardClaims.ExpiresAt = time.Now().Unix() + 60*60*24*7
+// 		return j.CreateToken(*claims)
+// 	}
+// 	return "", TokenInvalid
+// }

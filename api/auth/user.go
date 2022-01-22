@@ -2,9 +2,10 @@ package auth
 
 import (
 	"fmt"
-	"jsonrpcmicro/api/auth/config"
 	"jsonrpcmicro/api/response"
-	"jsonrpcmicro/internal/auth/svc"
+	"jsonrpcmicro/global"
+	authRequest "jsonrpcmicro/internal/auth/request"
+	authResponse "jsonrpcmicro/internal/auth/response"
 	"jsonrpcmicro/utils"
 	"log"
 	"net/rpc/jsonrpc"
@@ -20,9 +21,10 @@ import (
 
 func Login(c *gin.Context) {
 
-	config := new(config.Config)
-	conf := config.Init()
-	client, err := utils.NewClient(conf.Etcd.Hosts)
+	// config := new(config.Config)
+	// conf := config.Init()
+	etcd := global.ApiConfig.FindEtcdSvc("Auth")
+	client, err := utils.NewClient(etcd.Hosts)
 	if err != nil {
 		log.Fatalf("etcd连接错误:", err.Error())
 	}
@@ -30,15 +32,15 @@ func Login(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("etcd service error", ":no services find")
 	}
-	serviceInfo := client.GetService(conf.Etcd.Key)
-	fmt.Println(serviceInfo)
+	serviceInfo := client.GetService(etcd.Key)
+
 	// 1.
 	conn, err := jsonrpc.Dial("tcp", serviceInfo.ServiceAddress)
 	if err != nil {
 		log.Fatal("can't not connect to")
 	}
-	var reply svc.UserResponse
-	var args svc.LoginRequest
+	var args authRequest.LoginRequest
+	var reply authResponse.LoginResponse
 	_ = c.ShouldBindJSON(&args)
 	fmt.Println(args)
 	// 调用 Add() 方法
@@ -46,6 +48,7 @@ func Login(c *gin.Context) {
 	if err != nil {
 		log.Fatal("call UserService.Login error:", err)
 	}
-	fmt.Printf("UserServicer.Login(%d,%s)\n", reply.ID, reply.Name)
-	response.Ok(c)
+	fmt.Printf("UserServicer.Login(%d,%s)\n", reply.SessionID, reply.Name)
+
+	response.OkWithData(reply, c)
 }

@@ -97,7 +97,9 @@ func main() {
 
 	config.Conf = config.Init()
 	global.DB = initialize.GormMysql()
-
+	global.REDIS = initialize.Redis()
+	initialize.InitLog(&config.Conf)
+	global.Log.Error("test")
 	if global.DB != nil {
 		initialize.InitMysql(global.DB)
 	}

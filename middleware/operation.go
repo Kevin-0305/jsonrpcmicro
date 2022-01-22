@@ -7,10 +7,6 @@ import (
 )
 
 // func OperationRecord() gin.HandlerFunc {
-
-// }
-
-// func OperationRecord() gin.HandlerFunc {
 // 	return func(c *gin.Context) {
 // 		var body []byte
 // 		var userId int
@@ -18,7 +14,7 @@ import (
 // 			var err error
 // 			body, err = ioutil.ReadAll(c.Request.Body)
 // 			if err != nil {
-// 				global.GVA_LOG.Error("read body from request error:", zap.Any("err", err))
+// 				panic.Error("read body from request error:", zap.Any("err", err))
 // 			} else {
 // 				c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 // 			}
@@ -62,7 +58,7 @@ import (
 // 		record.Resp = writer.body.String()
 
 // 		if err := service.CreateSysOperationRecord(record); err != nil {
-// 			global.GVA_LOG.Error("create operation record error:", zap.Any("err", err))
+// 			panic.GVA_LOG.Error("create operation record error:", zap.Any("err", err))
 // 		}
 // 	}
 // }

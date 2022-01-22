@@ -1,5 +1,5 @@
 RpcServerConf:
-    ListenOn: 12001
+    ListenOn: 12002
     ServiceAddress: 127.0.0.1
 DataSource:
   Address: 49.235.96.248
@@ -10,13 +10,8 @@ DataSource:
 Etcd:
   Hosts:
   - 127.0.0.1:2379
-  Key: jsonrpcmicro_auth
+  Key: jsonrpcmicro_log
 Cache:
   Hosts: 
   - 127.0.0.1:6379
-Casbin:
-  ModelPath: ../../resource/rbac_model.conf
-Log:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: jsonrpcmicro_log
+
